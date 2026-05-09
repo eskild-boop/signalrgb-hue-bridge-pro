@@ -1,4 +1,4 @@
-﻿# SignalRGB â†” Philips Hue Bridge Pro (BSB003) workaround
+# SignalRGB ↔ Philips Hue Bridge Pro (BSB003) workaround
 
 Make SignalRGB drive Philips Hue Entertainment on a **Hue Bridge Pro** (model BSB003).
 
@@ -10,8 +10,8 @@ The bundled SignalRGB Hue plugin (v1.1.0 marketplace) doesn't work with the Pro 
 
 Three things conspire against you:
 
-1. **The Pro bridge is HTTPS-only.** Plain `http://192.168.4.33/api/...` returns `301 -> https://...`. The bundled v1.1.0 plugin is HTTP-only, so it falls off a cliff before the first byte of useful traffic.
-2. **The dev v2.0.0 plugin uses HTTPS** (good) but Qt's QML `XMLHttpRequest` â€” which is what plugins run inside â€” has no JS-level API to ignore TLS errors. The Pro bridge's cert is signed by Philips' internal `CN=root-bridge` CA with no SAN; QML XHR won't trust it. Every API call dies as `xhr.status === 0`.
+1. **The Pro bridge is HTTPS-only.** Plain `http://<bridge>/api/...` returns `301 -> https://...`. The bundled v1.1.0 plugin is HTTP-only, so it falls off a cliff before the first byte of useful traffic.
+2. **The dev v2.0.0 plugin uses HTTPS** (good) but Qt's QML `XMLHttpRequest` — which is what plugins run inside — has no JS-level API to ignore TLS errors. The Pro bridge's cert is signed by Philips' internal `CN=root-bridge` CA with no SAN; QML XHR won't trust it. Every API call dies as `xhr.status === 0`.
 3. **`dtls.send(packet)` defaults to little-endian** in SignalRGB's plugin runtime. Hue Entertainment v2 ("HueStream") frames carry **16-bit big-endian** color values per channel. So even after fixing the HTTPS path and getting a DTLS-PSK session up, the bridge silently drops every stream packet because the bytes are swapped, and the entertainment session times out after ~10s.
 
 This repo does:
@@ -40,7 +40,7 @@ cd signalrgb-hue-bridge-pro
 
 `install.ps1` copies the patched plugin into `Documents\WhirlwindFX\Plugins\` (SignalRGB's documented user-plugin override path), copies the proxy into `%LOCALAPPDATA%\hue-proxy\`, registers a Scheduled Task that auto-starts the proxy at logon, and starts it once for this session.
 
-After install: quit SignalRGB from the tray, reopen, go to **Devices â†’ Philips Hue**, link the bridge (press the round button on top within 30 s when prompted), pick your Entertainment Area, and apply an effect.
+After install: quit SignalRGB from the tray, reopen, go to **Devices → Philips Hue**, link the bridge (press the round button on top within 30 s when prompted), pick your Entertainment Area, and apply an effect.
 
 ## Uninstall
 
@@ -52,11 +52,11 @@ Removes the user-plugin files, the proxy directory, and the Scheduled Task. Sign
 
 ## Files
 
-- [`plugin/PhilipsHue.js`](plugin/PhilipsHue.js) â€” patched device + discovery plugin (proxy URLs, big-endian dtls.send, no crashing takeover branch)
-- [`plugin/PhilipsHue.qml`](plugin/PhilipsHue.qml) â€” patched UI with the area-picker ComboBox restored
-- [`proxy/hue-proxy.js`](proxy/hue-proxy.js) â€” local HTTP-to-HTTPS forwarder, auto-discovers the bridge IP via meethue.com if `HUE_BRIDGE_HOST` is unset
-- [`install.ps1`](install.ps1) â€” install/uninstall script
-- [`BUG_REPORT.md`](BUG_REPORT.md) â€” write-up suitable for filing with SignalRGB
+- [`plugin/PhilipsHue.js`](plugin/PhilipsHue.js) — patched device + discovery plugin (proxy URLs, big-endian dtls.send, no crashing takeover branch)
+- [`plugin/PhilipsHue.qml`](plugin/PhilipsHue.qml) — patched UI with the area-picker ComboBox restored
+- [`proxy/hue-proxy.js`](proxy/hue-proxy.js) — local HTTP-to-HTTPS forwarder, auto-discovers the bridge IP via meethue.com if `HUE_BRIDGE_HOST` is unset
+- [`install.ps1`](install.ps1) — install/uninstall script
+- [`BUG_REPORT.md`](BUG_REPORT.md) — write-up suitable for filing with SignalRGB
 
 ## What's NOT a permanent fix
 
@@ -67,8 +67,8 @@ This is a workaround that lives entirely in user-space:
 
 ## Credits
 
-Diagnosis and patches by [@eabergan](https://github.com/eskild-boop) with assistance from Claude (Anthropic) and OpenAI Codex. The endianness clue came from Codex spotting an undocumented optional argument in the SignalRGB plugin runtime docs.
+Diagnosis and patches by [@eskild-boop](https://github.com/eskild-boop) with assistance from Claude (Anthropic) and OpenAI Codex. The endianness clue came from Codex spotting an undocumented optional argument in the SignalRGB plugin runtime docs.
 
 ## License
 
-MIT â€” see [LICENSE](LICENSE).
+MIT — see [LICENSE](LICENSE).
