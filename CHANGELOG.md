@@ -6,6 +6,27 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-05-10
+
+### Added
+
+- `proxy/hue-proxy.js`: file logging. By default writes to `proxy.log` next to the script (rotates at 5 MB), so output is visible when the proxy runs under a detached Scheduled Task. Configurable via `HUE_PROXY_LOG` env var (set to `""` to disable).
+
+## [0.1.1] - 2026-05-10
+
+### Fixed
+
+- `plugin/PhilipsHue.qml`: operator precedence on the IP address fallback (`text: "IP Address: " + (root.device.ip ?? "Unknown")`).
+- `plugin/PhilipsHue.js`: removed dead `waitingForConnectionClose` variable.
+- `plugin/PhilipsHue.js`: replaced 5 mojibake byte sequences (em-dash, arrow) with ASCII.
+- `plugin/PhilipsHue.js`: documented single-bridge limitation in `ValidateIPAddress`.
+- `install.ps1`: quoted scheduled-task `-Argument` so spaces in path don't break Task Scheduler parsing.
+
+### Added
+
+- `CHANGELOG.md` (this file).
+- README markdownlint compliance (MD032).
+
 ## [0.1.0] - 2026-05-09
 
 ### Added
@@ -19,5 +40,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 - `install.ps1` — installs plugin override into `Documents\WhirlwindFX\Plugins\`, copies proxy to `%LOCALAPPDATA%\hue-proxy\`, registers a per-user Scheduled Task `HueProxy` that auto-starts at logon, and starts the proxy for the current session. `-Uninstall` switch reverses everything
 - `BUG_REPORT.md` — concise upstream report with diff and reproduction steps for the SignalRGB maintainers
 
-[Unreleased]: https://github.com/eskild-boop/signalrgb-hue-bridge-pro/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/eskild-boop/signalrgb-hue-bridge-pro/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/eskild-boop/signalrgb-hue-bridge-pro/releases/tag/v0.1.2
+[0.1.1]: https://github.com/eskild-boop/signalrgb-hue-bridge-pro/releases/tag/v0.1.1
 [0.1.0]: https://github.com/eskild-boop/signalrgb-hue-bridge-pro/releases/tag/v0.1.0
