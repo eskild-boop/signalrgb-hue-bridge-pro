@@ -9,6 +9,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 ## [0.1.0] - 2026-05-09
 
 ### Added
+
 - Patched `PhilipsHue.js` plugin (v2.0.0 derivative from `Gui-Dev-BOMDIA` branch, commit d324283) with three independent fixes:
   - `dtls.send(packet, 1)` — explicit big-endian flag (default is little-endian, which silently corrupts HueStream v2 RGB color words and causes the bridge to time out the entertainment session)
   - Removed crashing active-stream-takeover branch in device-plugin `Initialize()` that called `dtls.send` before any DTLS connection existed
