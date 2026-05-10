@@ -6,6 +6,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-05-10
+
+### Added
+
+- `tools/srgb.ps1` — CLI wrapper around SignalRGB Pro's local Signal API on `127.0.0.1:16038`. Subcommands: `current`, `list`, `apply <name>`, `brightness 0..100`, `on`, `off`, `next`, `previous`, `shuffle`, `layout`, `layout set <id>`. Lets you switch effects (e.g. `apply 'Battlefield 6'`) and tune brightness without opening the GUI.
+
 ## [0.1.2] - 2026-05-10
 
 ### Added
@@ -40,7 +46,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 - `install.ps1` — installs plugin override into `Documents\WhirlwindFX\Plugins\`, copies proxy to `%LOCALAPPDATA%\hue-proxy\`, registers a per-user Scheduled Task `HueProxy` that auto-starts at logon, and starts the proxy for the current session. `-Uninstall` switch reverses everything
 - `BUG_REPORT.md` — concise upstream report with diff and reproduction steps for the SignalRGB maintainers
 
-[Unreleased]: https://github.com/eskild-boop/signalrgb-hue-bridge-pro/compare/v0.1.2...HEAD
+[Unreleased]: https://github.com/eskild-boop/signalrgb-hue-bridge-pro/compare/v0.1.3...HEAD
+[0.1.3]: https://github.com/eskild-boop/signalrgb-hue-bridge-pro/releases/tag/v0.1.3
 [0.1.2]: https://github.com/eskild-boop/signalrgb-hue-bridge-pro/releases/tag/v0.1.2
 [0.1.1]: https://github.com/eskild-boop/signalrgb-hue-bridge-pro/releases/tag/v0.1.1
 [0.1.0]: https://github.com/eskild-boop/signalrgb-hue-bridge-pro/releases/tag/v0.1.0
