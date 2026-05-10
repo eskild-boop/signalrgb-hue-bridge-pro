@@ -186,7 +186,7 @@ Item {
                                         font.family: "Montserrat Regular"
                                         verticalAlignment: Text.AlignVCenter
                                         color: theme.secondarytextcolor
-                                        text: "IP Address: " + root.device.ip ?? "Unknown"
+                                        text: "IP Address: " + (root.device.ip ?? "Unknown")
                                         elide: Text.ElideRight
                                     }
 

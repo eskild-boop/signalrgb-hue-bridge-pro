@@ -274,7 +274,6 @@ function CloseStream(){
 	}
 }
 
-let waitingForConnectionClose = false;
 let LastStreamCheck;
 const STREAM_CHECK_INTERVAL = 5000;
 
@@ -304,7 +303,6 @@ export function Render() {
 		if(controller.selectedArea && controller.areas && controller.areas[controller.selectedArea]){
 			device.log(`Selected Area Changed! Closing Connection!`);
 			CloseDtlsSocket();
-			waitingForConnectionClose = true;
 			device.log(`Selected Area Changed! Recreating Subdevices!`);
 			createLightsForArea(controller.selectedArea);
 		}
@@ -360,7 +358,7 @@ function createLightsForArea(AreaId){
 	const area = controller.areas?.[AreaId];
 
 	if(!area){
-		device.log(`createLightsForArea: area [${AreaId}] not found in controller.areas â€” skipping.`);
+		device.log(`createLightsForArea: area [${AreaId}] not found in controller.areas - skipping.`);
 
 		return;
 	}
@@ -377,7 +375,7 @@ function createLightsForArea(AreaId){
 			: `Channel ${channelId}`;
 
 		const subdeviceId = `Philips Hue Channel: ${channelId}`;
-		device.log(`Adding channel: ${channelId} â†’ "${lightName}"`);
+		device.log(`Adding channel: ${channelId} -> "${lightName}"`);
 		device.createSubdevice(subdeviceId);
 		device.setSubdeviceName(subdeviceId, lightName);
 		device.setSubdeviceSize(subdeviceId, 3, 3);
@@ -566,6 +564,10 @@ class HueBridge {
 	}
 
 	ValidateIPAddress(ip){
+		// NOTE: This validates whatever bridge the local proxy points at (HUE_BRIDGE_HOST or
+		// the first auto-discovered bridge). The supplied `ip` arg is recorded as `instance.ip`
+		// for DTLS streaming but is NOT used as the REST target. Single-bridge setups only.
+		// For multi-bridge support the proxy would need per-bridge routing (e.g. host header).
 		this.currentlyValidatingIP = true;
 		service.updateController(this);
 
@@ -583,7 +585,7 @@ class HueBridge {
 			instance.ip = ip;
 			instance.SetConfig(JSON.parse(xhr.responseText));
 		}else{
-			service.log(`ip [${ip}] failed with status ${xhr.status} â€” not a Hue bridge.`);
+			service.log(`ip [${ip}] failed with status ${xhr.status} - not a Hue bridge.`);
 			instance.failedToValidateIP = true;
 			instance.ResolveIpAddress();
 		}
@@ -799,7 +801,7 @@ class HueBridge {
 						active_streamer: area.active_streamer ?? null,
 					};
 
-					service.log(`Area: ${area.metadata?.name} (${area.id}) â€” ${(area.channels ?? []).length} channels`);
+					service.log(`Area: ${area.metadata?.name} (${area.id}) - ${(area.channels ?? []).length} channels`);
 				}
 
 				service.updateController(instance);
@@ -834,7 +836,7 @@ class HueBridge {
 					for(const svc of (dev.services ?? [])){
 						if(svc.rtype === "entertainment"){
 							instance.lights[svc.rid] = {name: deviceName, id: svc.rid};
-							service.log(`Device: "${deviceName}" â†’ entertainment service: ${svc.rid}`);
+							service.log(`Device: "${deviceName}" -> entertainment service: ${svc.rid}`);
 						}
 					}
 				}
