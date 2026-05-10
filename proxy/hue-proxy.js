@@ -10,12 +10,39 @@
 //   HUE_BRIDGE_HOST   IP address of your Hue Bridge. If unset, the proxy queries
 //                     https://discovery.meethue.com for the first bridge on this LAN.
 //   HUE_PROXY_PORT    TCP port to listen on. Default 18080.
+//   HUE_PROXY_LOG     Path to log file. If unset, defaults to proxy.log next to this script.
+//                     Set to "" (empty) to disable file logging entirely.
 
 const http = require('http');
 const https = require('https');
+const fs = require('fs');
+const path = require('path');
 
 const LISTEN_HOST = '127.0.0.1';
 const LISTEN_PORT = parseInt(process.env.HUE_PROXY_PORT || '18080', 10);
+
+// Mirror console.log/error to a log file so the proxy's output is visible when running
+// under a Scheduled Task or other detached context.
+const LOG_PATH = process.env.HUE_PROXY_LOG !== undefined
+    ? process.env.HUE_PROXY_LOG
+    : path.join(__dirname, 'proxy.log');
+if (LOG_PATH) {
+    try {
+        // Rotate if larger than 5 MB to avoid unbounded growth.
+        if (fs.existsSync(LOG_PATH) && fs.statSync(LOG_PATH).size > 5 * 1024 * 1024) {
+            fs.renameSync(LOG_PATH, LOG_PATH + '.1');
+        }
+        const stream = fs.createWriteStream(LOG_PATH, { flags: 'a' });
+        const tee = (orig) => (...args) => {
+            orig.apply(console, args);
+            stream.write(args.map(String).join(' ') + '\n');
+        };
+        console.log = tee(console.log);
+        console.error = tee(console.error);
+    } catch (e) {
+        console.error(`Could not open log file ${LOG_PATH}: ${e.message}`);
+    }
+}
 
 function discoverBridgeIp() {
     return new Promise((resolve, reject) => {
