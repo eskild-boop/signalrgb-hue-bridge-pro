@@ -42,8 +42,13 @@ After this single change, on Hue Bridge Pro firmware `2071294020` (apiversion 1.
 
 ## Environment
 
-- Bridge: `BSB003` "Hue Bridge pro", swversion `2071294020`, apiversion `1.76.0`, bridgeid `C42996FFFEC67AEE`
+- Bridge: `BSB003` "Hue Bridge pro", swversion `2071294020`, apiversion `1.76.0`
 - SignalRGB Pro 2.5.55 on Windows 11 26200
 - Plugin v2.0.0 from `Gui-Dev-BOMDIA` `d324283`
 
-Happy to share the pktmon `.pcapng` if useful.
+## Reference implementation
+
+Working patches (plugin + small HTTP→HTTPS proxy that gets around the discovery-service cert bypass gap), with one-shot installer:
+**<https://github.com/eskild-boop/signalrgb-hue-bridge-pro>**
+
+Happy to share the pktmon `.pcapng` capture (1,643 outgoing DTLS records, 0 inbound, sequence numbers consistent with a completed handshake — proves the failure is in HueStream payload format, not transport).
