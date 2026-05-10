@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  js-syntax:
+    name: JS syntax check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: node --check on all .js files
+        run: |
+          set -e
+          # The plugin file is loaded by SignalRGB's Qt-QML JS engine, which doesn't support ES modules
+          # the way Node does. We syntax-check it as a plain script (drop the import/export keywords are
+          # only top-level so node --check still validates statement-level grammar).
+          for f in proxy/hue-proxy.js plugin/PhilipsHue.js; do
+            echo "::group::node --check $f"
+            node --check "$f"
+            echo "::endgroup::"
+          done
+
+  markdown-lint:
+    name: Markdown lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DavidAnson/markdownlint-cli2-action@v16
+        with:
+          globs: '**/*.md'
+          config: '.markdownlint.json'
+
+  powershell-lint:
+    name: PowerShell static analysis
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run PSScriptAnalyzer
+        shell: pwsh
+        run: |
+          Install-Module -Name PSScriptAnalyzer -Force -SkipPublisherCheck -Scope CurrentUser
+          # Exclusions:
+          # - PSAvoidUsingWriteHost: Write-Host is correct for an interactive installer (colored console output).
+          # - PSUseShouldProcessForStateChangingFunctions: this is an installer with internal helpers, not a module exposing cmdlets.
+          $results = Invoke-ScriptAnalyzer -Path install.ps1 -Severity Warning,Error -Recurse `
+                                            -ExcludeRule PSAvoidUsingWriteHost,PSUseShouldProcessForStateChangingFunctions
+          if ($results) {
+            $results | Format-Table -AutoSize
+            Write-Error ("PSScriptAnalyzer found $($results.Count) issue(s)")
+            exit 1
+          }
+          Write-Host "PSScriptAnalyzer: clean."
