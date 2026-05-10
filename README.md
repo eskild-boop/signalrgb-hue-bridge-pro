@@ -15,6 +15,7 @@ Three things conspire against you:
 3. **`dtls.send(packet)` defaults to little-endian** in SignalRGB's plugin runtime. Hue Entertainment v2 ("HueStream") frames carry **16-bit big-endian** color values per channel. So even after fixing the HTTPS path and getting a DTLS-PSK session up, the bridge silently drops every stream packet because the bytes are swapped, and the entertainment session times out after ~10s.
 
 This repo does:
+
 - Patches the v2.0.0 plugin to (a) call `dtls.send(packet, 1)` (big-endian), (b) skip a crashing active-stream-takeover branch, (c) re-add the entertainment-area picker the dev branch's QML lost.
 - Rewrites the plugin's bridge URLs from `https://${bridge_ip}/...` to `http://127.0.0.1:18080/...`.
 - Ships a tiny Node.js proxy on `127.0.0.1:18080` that forwards to the bridge over HTTPS with cert validation off. The QML XHR never sees a self-signed cert.
@@ -61,6 +62,7 @@ Removes the user-plugin files, the proxy directory, and the Scheduled Task. Sign
 ## What's NOT a permanent fix
 
 This is a workaround that lives entirely in user-space:
+
 - SignalRGB's auto-update will keep restoring the broken v1.1.0 in `%LOCALAPPDATA%\WhirlwindFX\SignalRgb\cache\addons\`. The user-plugin override at `Documents\WhirlwindFX\Plugins\` wins, so you don't notice.
 - If Philips changes the bridge cert or DTLS handshake again, the proxy still works but the plugin patches may need updating.
 - The right long-term fix is upstream merging the dev branch with the endianness flag set. See [`BUG_REPORT.md`](BUG_REPORT.md).

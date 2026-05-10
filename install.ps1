@@ -82,7 +82,9 @@ Write-Host ("Installed " + (Join-Path $proxyDest 'hue-proxy.js')) -ForegroundCol
 
 # 3) Scheduled task to auto-start proxy at logon
 Stop-ProxyIfRunning
-$action    = New-ScheduledTaskAction -Execute $node.Source -Argument (Join-Path $proxyDest 'hue-proxy.js') -WorkingDirectory $proxyDest
+$proxyJs   = Join-Path $proxyDest 'hue-proxy.js'
+# Quote the script path so spaces in $env:LOCALAPPDATA or username don't break Task Scheduler arg parsing.
+$action    = New-ScheduledTaskAction -Execute $node.Source -Argument "`"$proxyJs`"" -WorkingDirectory $proxyDest
 $trigger   = New-ScheduledTaskTrigger -AtLogOn -User $env:USERNAME
 $settings  = New-ScheduledTaskSettingsSet -StartWhenAvailable -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries `
                                           -RestartCount 3 -RestartInterval (New-TimeSpan -Minutes 1) `
