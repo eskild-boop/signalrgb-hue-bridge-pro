@@ -48,7 +48,10 @@ jobs:
         shell: pwsh
         run: |
           Install-Module -Name PSScriptAnalyzer -Force -SkipPublisherCheck -Scope CurrentUser
-          $results = Invoke-ScriptAnalyzer -Path install.ps1 -Severity Warning,Error -Recurse
+          # PSAvoidUsingWriteHost is intentionally excluded — Write-Host is correct for an
+          # interactive installer that wants colored console output, not pipeline output.
+          $results = Invoke-ScriptAnalyzer -Path install.ps1 -Severity Warning,Error -Recurse `
+                                            -ExcludeRule PSAvoidUsingWriteHost
           if ($results) {
             $results | Format-Table -AutoSize
             Write-Error ("PSScriptAnalyzer found $($results.Count) issue(s)")
