@@ -19,10 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----
-
-The patched plugin files in `plugin/` are derivative works of
-gitlab.com/signalrgb/philipshue (branch `Gui-Dev-BOMDIA`, commit d324283),
-authored originally by WhirlwindFX/SignalRGB contributors. Upstream license
-applies to those portions; the patches in this repo are released under MIT.
