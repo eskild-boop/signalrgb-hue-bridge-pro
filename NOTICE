@@ -1,0 +1,15 @@
+# Upstream attribution
+
+The patched plugin files in `plugin/` are derivative works of
+[gitlab.com/signalrgb/philipshue](https://gitlab.com/signalrgb/philipshue)
+(branch `Gui-Dev-BOMDIA`, commit `d324283`), authored originally by
+WhirlwindFX/SignalRGB contributors. The upstream project's license applies
+to those portions of the code that remain unmodified from upstream.
+
+The patches contained in this repository (the diffs against upstream, the
+local HTTPS proxy in `proxy/`, the install script in `install.ps1`, the
+tools in `tools/`, and the documentation in `docs/`) are released under
+the MIT License — see [LICENSE](LICENSE).
+
+If you redistribute or fork this repository, please preserve this NOTICE
+file alongside LICENSE so the upstream contribution chain is visible.
